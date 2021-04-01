@@ -12,8 +12,8 @@ const createUser = async (user_name, user_pass) => {
     )
 
     if(existentUser.rows[0]) {
-      console.log('O usuário já existe')
-      return false
+      
+      return { message: "O usuário já existe!" }
     } 
     
     console.log(user_name)
@@ -23,8 +23,6 @@ const createUser = async (user_name, user_pass) => {
       VALUES ($1, crypt($2, gen_salt('bf')));`, 
       [user_name, user_pass]
     )
-
-    console.log(result)
 
     return result.rowCount
 
@@ -61,7 +59,25 @@ const readUser = async (user_name, user_pass) => {
   }
 }
 
+
+const getTables = async () => {
+  try {
+
+    let res = await db.query(`
+      SELECT * FROM pg_catalog.pg_tables
+      WHERE schemaname != 'pg_catalog' AND 
+      schemaname != 'information_schema';
+    `)
+
+    if(res) return res
+
+  } catch (err) {
+    return err
+  }
+}
+
 module.exports = {
   createUser,
-  readUser
+  readUser,
+  getTables
 }
