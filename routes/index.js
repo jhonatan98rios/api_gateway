@@ -3,9 +3,15 @@ const router = express.Router();
 
 const { createUser, readUser } = require('../controllers/userControllers')
 
+router.get('/', async (req, res) => {
+  res.status(200).send(`Hello World`)
+})
+
 /* Create a fake data */
 
 router.post('/create', async (req, res) => {
+
+  console.log(req.body)
 
   let result = await createUser(req.body.user_name, req.body.user_pass)
 
@@ -19,7 +25,6 @@ router.post('/create', async (req, res) => {
 /* Return data */
 
 router.post('/read', async (req, res) => {
-
   let result = await readUser(req.body.user_name, req.body.user_pass)
 
   if(result.user){

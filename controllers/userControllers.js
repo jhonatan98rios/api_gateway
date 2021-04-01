@@ -4,24 +4,33 @@ const db = require('../databases/connection')
 const createUser = async (user_name, user_pass) => {
   try {
 
+    
     let existentUser = await db.query(`
       SELECT * FROM users 
       WHERE user_name = $1;`, 
       [user_name]
     )
 
-    if(existentUser.rows[0]) return false
-
+    if(existentUser.rows[0]) {
+      console.log('O usuário já existe')
+      return false
+    } 
+    
+    console.log(user_name)
+    
     let result = await db.query(`
       INSERT INTO users (user_name, user_pass) 
-      VALUES ($1, gen_salt('bf', 8));`, 
+      VALUES ($1, crypt($2, gen_salt('bf')));`, 
       [user_name, user_pass]
     )
+
+    console.log(result)
+
     return result.rowCount
 
   }catch(err){
 
-    return 'err'
+    return err
   }
 }
 
@@ -31,7 +40,7 @@ const readUser = async (user_name, user_pass) => {
     let user = await db.query(`
       SELECT * FROM users 
       WHERE user_name = $1 
-      AND user_pass = $2;`, 
+      AND user_pass = crypt($2, user_pass);`, 
       [user_name, user_pass]
     )
 

@@ -5,6 +5,7 @@ const app = express()
 const routes = require('./routes')
 
 // Configurations
+app.use(express.json());
 app.use(cors())   
 app.use(routes)
 
