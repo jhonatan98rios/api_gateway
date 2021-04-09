@@ -16,3 +16,12 @@ module.exports = {
   end: () => pool.end()
 };
 
+/* Commands */
+
+/* 
+name, 
+user_name, 
+passw, 
+access_token, 
+ddns
+*/
