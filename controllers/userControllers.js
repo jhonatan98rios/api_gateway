@@ -40,7 +40,7 @@ const readUser = async (user_name, passw) => {
 
     return (user.rowCount > 0) ? 
       { data: user.rows[0].user_name, status: 200 } : 
-      { error: 'User not found', status: 400 }
+      { data: 'User not found', status: 400 }
 
   }
   catch (err) {

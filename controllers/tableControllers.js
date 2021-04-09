@@ -1,16 +1,19 @@
+const db = require('../databases/connection')
 
 const getTables = async () => {
   try {
 
-    let res = await db.query(`
+    const res = await db.query(`
       SELECT * FROM pg_catalog.pg_tables
       WHERE schemaname != 'pg_catalog' AND 
       schemaname != 'information_schema';
     `)
 
-    return (result.rowCount > 0) ? 
+    const data = (res.rowCount > 0) ? 
       { data: res.rows, status: 200 } : 
-      { error: "Erro ao criar o usuário", status: 400 }
+      { data: "Erro ao criar o usuário", status: 400 }
+
+    return data
 
   } catch (err) {
     return err
