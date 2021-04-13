@@ -1,7 +1,7 @@
 const db = require('../databases/connection')
 
 /* Create a user for test */
-const createUser = async (name, user_name, passw, access_token, ddns) => {
+const createUser = async (name, user_name, passw, access_token, ddns ) => {
   try {
     
     let existentUser = await db.query(`
@@ -14,8 +14,8 @@ const createUser = async (name, user_name, passw, access_token, ddns) => {
     
     let result = await db.query(`
       INSERT INTO users (name, user_name, passw, access_token, ddns) 
-      VALUES ($1, $2, crypt($3, gen_salt('bf')), $4, $5);`, 
-      [name, user_name, passw, access_token, ddns ]
+      VALUES ($1, $2, crypt($3, gen_salt('bf')), crypt($4, gen_salt('bf')), $5);`, 
+      [name, user_name, passw, access_token, ddns]
     )
 
     return (result.rowCount > 0) ? 
@@ -28,18 +28,18 @@ const createUser = async (name, user_name, passw, access_token, ddns) => {
   }
 }
 
-const readUser = async (user_name, passw) => {
+const getUser = async (user_name, access_token) => {
   try {
     
     let user = await db.query(`
       SELECT * FROM users 
       WHERE user_name = $1 
-      AND user_pass = crypt($2, passw);`, 
-      [user_name, passw]
+      AND access_token = crypt($2, access_token);`, 
+      [user_name, access_token]
     )
 
     return (user.rowCount > 0) ? 
-      { data: user.rows[0].user_name, status: 200 } : 
+      { data: user.rows[0], status: 200 } : 
       { data: 'User not found', status: 400 }
 
   }
@@ -52,5 +52,5 @@ const readUser = async (user_name, passw) => {
 
 module.exports = {
   createUser,
-  readUser,
+  getUser,
 }

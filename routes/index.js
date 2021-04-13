@@ -1,33 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-const { createUser, readUser } = require('../controllers/userControllers')
-const { getTables } = require('../controllers/tableControllers')
-
-router.get('/', async (req, res) => {
-  res.status(200).send(`Hello World`)
-})
+const { createUser, getUser } = require('../controllers/userControllers')
+const { getColumns } = require('../controllers/tableControllers')
 
 
-/* Create a fake data */
+/* Create a fake User */
 router.post('/create', async (req, res) => {
-  const result = await createUser(req.body.user_name, req.body.user_pass)
+  const result = await createUser(req.body.name, req.body.user_name, req.body.passw, req.body.access_token, req.body.ddns )
   res.status(result.status).send(result.message)
 })
 
 
-/* Return Users */
-router.post('/read', async (req, res) => {
-  const result = await readUser(req.body.user_name, req.body.user_pass)
-  res.status(result.status).send(result.data)
-
+/* Return User DDNS */
+router.post('/login', async (req, res) => {
+  const result = await getUser(req.body.user_name, req.body.access_token)
+  res.send(result.data.ddns)
 })
 
 
-/* Return all tables */
-router.get('/tables', async (req, res) => {
-  const result = await getTables()
-  res.status(result.status).send(result.data )
+/* Return all Columns */
+router.get('/columns', async (req, res) => {
+  const result = await getColumns(req.query.table)
+  res.status(result.status).send(result.data)
 })
 
 
