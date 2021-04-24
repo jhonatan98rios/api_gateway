@@ -16,7 +16,7 @@ module.exports = {
   end: () => pool.end()
 };
 
-/* Commands */
+/* Structure */
 
 /* 
 name, 
